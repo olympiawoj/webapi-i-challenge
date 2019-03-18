@@ -75,6 +75,25 @@ server.get("/api/users/:id", (req, res) => {
     });
 });
 
+//DELETE by ID -- removes the user with the specified id and returns the deleted user
+
+server.delete("/api/users/:id", (req, res) => {
+  const { id } = req.params;
+  db.remove(id)
+    .then(deletedUser => {
+      if (deletedUser) {
+        res.status(204).end();
+      } else {
+        res.status(404).json({
+          message: "The user with the specified ID does not exist."
+        });
+      }
+    })
+    .catch(err =>
+      res.status(500).json({ error: "The user could not be removed" })
+    );
+});
+
 //Step 6: Tell server to listen to connections. First arg = port #, second arg is callback function.
 
 //This is a server and it will run, but it has no endpoints yet. Before we RUN the server, we should configure endpoints. This goes on the bottom.
