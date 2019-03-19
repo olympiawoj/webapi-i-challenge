@@ -94,6 +94,35 @@ server.delete("/api/users/:id", (req, res) => {
     );
 });
 
+//PUT -- updates the user w/ the specified id using data from request body. Returns the modified document, NOT the original
+
+server.put("/api/users/:id", (req, res) => {
+  const { id } = req.params;
+  const userInfo = req.body;
+
+  if (userInfo.name && userInfo.bio) {
+    db.update(id, userInfo)
+      .then(updatedUser => {
+        if (updatedUser) {
+          res.status(200).json(updatedUser);
+        } else {
+          res.status(404).json({
+            message: "The user with the specified ID does not exist."
+          });
+        }
+      })
+      .catch(error => {
+        res
+          .status(500)
+          .json({ error: "The user information could not be modified." });
+      });
+  } else {
+    res
+      .status(400)
+      .json({ error: "Please provide name and bio for the user." });
+  }
+});
+
 //Step 6: Tell server to listen to connections. First arg = port #, second arg is callback function.
 
 //This is a server and it will run, but it has no endpoints yet. Before we RUN the server, we should configure endpoints. This goes on the bottom.
