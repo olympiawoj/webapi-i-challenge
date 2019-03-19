@@ -104,7 +104,11 @@ server.put("/api/users/:id", (req, res) => {
     db.update(id, userInfo)
       .then(updatedUser => {
         if (updatedUser) {
-          res.status(200).json(updatedUser);
+          db.findById(id)
+            .then(user => {
+              res.status(200).json({ user });
+            })
+            .catch();
         } else {
           res.status(404).json({
             message: "The user with the specified ID does not exist."
